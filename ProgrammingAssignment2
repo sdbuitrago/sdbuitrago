@@ -1,0 +1,38 @@
+makeCacheMatrix <- function(x = matrix()) {
+  ##return a matrix
+  m<-NULL
+  ##create the argument m
+  set<-function(y){
+    x<<-y
+    m<<-NULL
+  }
+  ##create the argument "set", being a function depending of "y" which relate to "x" and take the empty argument "m"
+  ##double arrows allows to preserve the conjuction of the environment of the parent function
+  ##manage of the variables at different levels
+  get<-function() {x}
+  ##create the argument "get" which is a function related to "x"
+  setInv<-function(inverse) m<<-inverse
+  ##new argument "setInv" which is a function taken the argument "inverse"which will be assigned to "m"
+  getInv<-function() m
+  ##new argument which is a function related to "m"
+  list(set=set,get=get,setInv=setInv,getInv=getInv)
+}
+##Finally we create a list of arguments designed before, set, get, setInv, getInv
+
+  cacheSolve <- function(x, ...) {
+    ##Return a function which is the inverse of x
+    m<-x$getInv()
+    if(!is.null(m)){
+      ##function "if" if m is not a null, wll yield a message, otherwise, will return "m"
+      message("getting cached data")
+      return(m)
+    }
+    data<-x$get()
+    ##new argument "data" assigned with the part "get" of x
+    m<-solve(data,...)
+    ##here we assigne to m the function solve to return the inverse of data
+    x$setInv(m)
+    ##return setInv of m from "x"
+    m
+    ##return m which the inverse matrix
+  }
